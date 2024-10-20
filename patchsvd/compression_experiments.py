@@ -41,11 +41,9 @@ def prep_the_dataset(args):
     elif args.dataset == 'CLIC':
         from torchvision.datasets import ImageFolder
         dataset = ImageFolder(root='CLIC')    
-    elif not args.dataset:
-        from torchvision.datasets import ImageFolder
-        dataset = ImageFolder(root='./', train=False, download=False)
     else:
-        return None
+        from torchvision.datasets import ImageFolder
+        dataset = ImageFolder(root=args.dataset, train=False, download=False)
     return dataset
 
 
