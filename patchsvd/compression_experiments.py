@@ -21,6 +21,26 @@ parser.add_argument('--visualize', help='whether visualize the score maps for Pa
 parser.add_argument('--visualization_limit', help='how many images do you want to visualize', default=10, type=int)
 parser.add_argument('--img-path', help='Path to image file you want to compress.', default=None)
 
+from torch.utils.data import Dataset
+from PIL import Image
+import os
+class FlatImageDataset(Dataset):
+    def __init__(self, root, transform=None):
+        self.root = root
+        self.transform = transform
+        self.image_paths = [os.path.join(root, fname) for fname in os.listdir(root) if fname.endswith(('.png', '.jpg', '.jpeg'))]
+
+    def __len__(self):
+        return len(self.image_paths)
+
+    def __getitem__(self, idx):
+        img_path = self.image_paths[idx]
+        image = Image.open(img_path).convert("RGB")
+        if self.transform:
+            image = self.transform(image)
+        return image, 'default'
+
+
 def prep_the_dataset(args):
     if args.dataset == 'MNIST':
         from torchvision.datasets import MNIST
@@ -42,8 +62,7 @@ def prep_the_dataset(args):
         from torchvision.datasets import ImageFolder
         dataset = ImageFolder(root='CLIC')    
     else:
-        from torchvision.datasets import ImageFolder
-        dataset = ImageFolder(root=args.dataset)
+        dataset = FlatImageDataset(root=args.dataset)
     return dataset
 
 
