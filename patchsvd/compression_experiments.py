@@ -43,7 +43,7 @@ def prep_the_dataset(args):
         dataset = ImageFolder(root='CLIC')    
     else:
         from torchvision.datasets import ImageFolder
-        dataset = ImageFolder(root=args.dataset, train=False, download=False)
+        dataset = ImageFolder(root=args.dataset)
     return dataset
 
 
