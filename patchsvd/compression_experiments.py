@@ -10,7 +10,7 @@ from patch_svd import PatchSVD
 
 parser = argparse.ArgumentParser(description='Welcome to PatchSVD Experiments!')
 parser.add_argument('--dataset', default=None, help='Name of the dataset. Choose from MNIST, CIFAR-10, FGVC_Aircraft, '
-                                                       'EuroSAT, Kodak, and CLIC.', choices=['MNIST', 'CIFAR-10', 'FGVC_Aircraft', 'EuroSAT', 'Kodak', 'CLIC'])
+                                                       'EuroSAT, Kodak, and CLIC.')   # choices=['MNIST', 'CIFAR-10', 'FGVC_Aircraft', 'EuroSAT', 'Kodak', 'CLIC']
 parser.add_argument('--p_x', help='Patch size along the x-axis.', default=5, type=int)
 parser.add_argument('--p_y', help='Patch size along the y-axis.', default=5, type=int)
 parser.add_argument('--target-compression', '-c', help='Your target compression rate. Should be less than 1.',
@@ -42,6 +42,7 @@ def prep_the_dataset(args):
         from torchvision.datasets import ImageFolder
         dataset = ImageFolder(root='CLIC')    
     elif not args.dataset:
+        from torchvision.datasets import ImageFolder
         dataset = ImageFolder(root='./', train=False, download=False)
     else:
         return None
