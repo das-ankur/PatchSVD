@@ -42,8 +42,7 @@ def prep_the_dataset(args):
         from torchvision.datasets import ImageFolder
         dataset = ImageFolder(root='CLIC')    
     elif not args.dataset:
-        assert args.img_path, print("Neither a dataset nor an image file has been selected. Exiting...")
-        return None
+        dataset = ImageFolder(root='./', train=False, download=False)
     else:
         return None
     return dataset
