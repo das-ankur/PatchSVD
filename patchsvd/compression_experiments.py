@@ -1,3 +1,4 @@
+import time
 import argparse
 import numpy as np
 from torch.utils.data import random_split
@@ -67,6 +68,7 @@ def prep_the_dataset(args):
 
 
 def main():
+    total_time = 0
     args = parser.parse_args()
     dataset = prep_the_dataset(args)
     experiment_name = f'dataset_{args.dataset}_P_x_{args.p_x}_P_y_{args.p_y}_target_compression_{args.target_compression}'
@@ -84,8 +86,11 @@ def main():
             print(f"Running sample {sample_index} / {len(dataset)}")
             print(dataset.imgs[sample_index][0])
             img = np.array(sample[0])
+            start = time.time()
             patch_svd_pil, patch_svd_space_required = patch_svd_runner(img, str(sample_index))
             patch_svd = np.array(patch_svd_pil)
+            end = time.time()
+            total_time += end - start
             jpeg = to_jpeg(img, 1 - args.target_compression, args.output_dir)
             svd, svd_space_required = svd_runner(img)
             if sample_index < args.visualization_limit:
@@ -132,8 +137,11 @@ def main():
         experiment_metrics_patch_svd = ExperimentMetrics(1)
         experiment_metrics_svd = ExperimentMetrics(1)
         experiment_metrics_jpeg = ExperimentMetrics(1)
+        start = time.time()
         patch_svd_pil, patch_svd_space_required = patch_svd_runner(img, args.img_path)
         patch_svd = np.array(patch_svd_pil)
+        end = time.time()
+        total_time += end - start
         jpeg = to_jpeg(img, 1 - args.target_compression, args.output_dir)
         svd, svd_space_required = svd_runner(img)
         cv2.imwrite(os.path.join(args.output_dir, f"{args.img_path}_patch_svd.png"), patch_svd)
@@ -153,7 +161,7 @@ def main():
             {experiment_metrics_patch_svd.get_avg_mse(), experiment_metrics_jpeg.get_avg_mse(), experiment_metrics_svd.get_avg_mse()}")
         print(f"PSNR for PatchSVD, JPEG, SVD: \
             {experiment_metrics_patch_svd.get_avg_psnr(), experiment_metrics_jpeg.get_avg_psnr(), experiment_metrics_svd.get_avg_psnr()}")
-
+        print("Average inference time: ", total_time / len(dataset))
 
 if __name__ == "__main__":
     main()
