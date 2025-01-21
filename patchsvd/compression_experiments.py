@@ -129,6 +129,7 @@ def main():
                                         experiment_metrics_svd.get_avg_mse(),
                                         experiment_metrics_svd.get_avg_psnr(),
                                         calculated_compression_ratio_svd])
+        print("Average inference time: ", total_time / len(dataset))
     else:
         print(f"compressing image {args.img_path}")
         img = cv2.imread(args.img_path)
@@ -161,7 +162,6 @@ def main():
             {experiment_metrics_patch_svd.get_avg_mse(), experiment_metrics_jpeg.get_avg_mse(), experiment_metrics_svd.get_avg_mse()}")
         print(f"PSNR for PatchSVD, JPEG, SVD: \
             {experiment_metrics_patch_svd.get_avg_psnr(), experiment_metrics_jpeg.get_avg_psnr(), experiment_metrics_svd.get_avg_psnr()}")
-        print("Average inference time: ", total_time / len(dataset))
 
 if __name__ == "__main__":
     main()
