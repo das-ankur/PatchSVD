@@ -135,7 +135,6 @@ def main():
                                         calculated_compression_ratio_svd])
         print("Average inference time: ", total_time / len(dataset))
         print(f"Average BPP: {np.mean(np.array(bpp_ratios))}")
-        ")
 
     else:
         print(f"compressing image {args.img_path}")
