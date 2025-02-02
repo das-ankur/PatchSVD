@@ -76,6 +76,7 @@ def main():
     os.makedirs(args.output_dir, exist_ok=True)
     patch_svd_runner = PatchSVD(args.p_x, args.p_y, args.target_compression, args.output_dir,
                                 args.visualize, args.visualization_limit)
+    bpp_ratios = []
     svd_runner = SVD(args.target_compression)
     if dataset:
         experiment_metrics_patch_svd = ExperimentMetrics(len(dataset))
@@ -111,7 +112,10 @@ def main():
                 original_size *= shape
             calculated_compression_ratio_svd = calculate_compression(original_size, svd_space_required)
             calculated_compression_ratio_patch_svd = calculate_compression(original_size, patch_svd_space_required)
-
+            print(f"Shape of the image: {img.shape}")
+            calculated_bpp = patch_svd_space_required / (img.shape[0] * img.shape[1])
+            bpp_ratios.append(calculated_bpp)
+            print("Calculated BPP: ", calculated_bpp) 
             # print(f'compression ratio achieved by PatchSVD is {calculated_compression_ratio_patch_svd}')
             # print(f'compression ratio achieved by SVD is {calculated_compression_ratio_svd}')
         with open(args.output_dir + '.csv', 'w', newline='') as csv_file:
@@ -130,6 +134,9 @@ def main():
                                         experiment_metrics_svd.get_avg_psnr(),
                                         calculated_compression_ratio_svd])
         print("Average inference time: ", total_time / len(dataset))
+        print(f"Average BPP: {np.mean(np.array(bpp_ratios))})
+        ")
+
     else:
         print(f"compressing image {args.img_path}")
         img = cv2.imread(args.img_path)
